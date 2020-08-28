@@ -8,25 +8,45 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public List<GameObject> targets;
-    float minSpawnRate = 1.0f;
-    float maxSpawnRate = 3.0f;
     float spawnRate;
+    float minSpawnRate;
+    float maxSpawnRate;
     public TextMeshProUGUI scoreText;
-    public TextMeshProUGUI gameOverText;
-    public Button restartButton;
+    public GameObject gameOverUIObjects;
+    public GameObject titleScreenUIObjects;
+   //public TextMeshProUGUI gameOverText;
+    //public TextMeshProUGUI titleText;
+    //public Button restartButton;
+    //public Button easyButton;
+    //public Button normalButton;
+    //public Button hardButton;
+    private enum Difficulty
+    {
+        Easy,
+        Normal,
+        Hard
+    }
+
+    Difficulty selectedDifficulty;
+
     private int score;
     public bool isGameOver;
+    
 
 
     // Start is called before the first frame update
     void Start()
     {
-        isGameOver = false;
-        StartCoroutine(SpawnTarget());
+        //isGameOver = false;
+        //StartCoroutine(SpawnTarget());
+        
+        
         score = 0;
         scoreText.text = "SCORE: " + score;
-        gameOverText.gameObject.SetActive(false);
-        restartButton.gameObject.SetActive(false);
+        SetTitleScreenUI();
+      
+
+
 
     }
 
@@ -58,8 +78,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        gameOverText.gameObject.SetActive(true);
-        restartButton.gameObject.SetActive(true);
+        gameOverUIObjects.gameObject.SetActive(true);
         isGameOver = true;       
     }
 
@@ -67,6 +86,72 @@ public class GameManager : MonoBehaviour
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
+    public void StartGameEasy()
+    {
+        selectedDifficulty = Difficulty.Easy;
+        SetGameScreenUI();
+        isGameOver = false;
+        SetSpawnRate(selectedDifficulty);
+        StartCoroutine(SpawnTarget());
+
+    }
+
+    public void StartGameNormal()
+    {
+        selectedDifficulty = Difficulty.Normal;
+        SetGameScreenUI();
+        isGameOver = false;
+        SetSpawnRate(selectedDifficulty);
+        StartCoroutine(SpawnTarget());
+
+    }
+
+    public void StartGameHard()
+    {
+        selectedDifficulty = Difficulty.Hard;
+        SetGameScreenUI();
+        isGameOver = false;
+        SetSpawnRate(selectedDifficulty);
+        StartCoroutine(SpawnTarget());
+
+    }
+
+    private void SetTitleScreenUI()
+    {
+        scoreText.gameObject.SetActive(false);
+        gameOverUIObjects.gameObject.SetActive(false);
+        titleScreenUIObjects.gameObject.SetActive(true);
+        
+    }
+
+    private void SetGameScreenUI()
+    {
+        scoreText.gameObject.SetActive(true);
+        titleScreenUIObjects.gameObject.SetActive(false);
+    }
+
+    private void SetSpawnRate(Difficulty diff)
+    {
+        if (diff == Difficulty.Easy)
+        {
+            minSpawnRate = 1.5f;
+            maxSpawnRate = 3.0f;
+        }
+
+        else if (diff == Difficulty.Normal)
+        {
+            minSpawnRate = 1.0f;
+            maxSpawnRate = 2.5f;
+        }
+
+        else
+        {
+            minSpawnRate = 0.5f;
+            maxSpawnRate = 1.0f;
+        }
+    }
+        
 
 
 }
